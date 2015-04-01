@@ -5,8 +5,8 @@
   Time: 13:31
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page import="by.grsu.av.engine.UserFacade" %>
 <%@ page import="by.grsu.av.model.User" %>
+<%@ page import="java.util.Collection" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <table>
@@ -16,7 +16,7 @@
   </thead>
   <tbody>
   <%
-    for (User u: UserFacade.getInstance().getUsers()){
+    for (User u: (Collection<User>) request.getAttribute("users")){
   %>
   <tr>
     <td><%= u.getUsername() %></td>
@@ -28,5 +28,5 @@
   </tbody>
 </table>
 <script>
-  setTimeout('location.href = "/index.jsp?mode=2"', 3000);
+  setTimeout('location.href = "/user/online"', 3000);
 </script>

@@ -22,6 +22,10 @@ public final class UserRepository {
     }
 
     public static User create(String username) {
+        if(username.equals("admin")) {
+            User admin = new User(username, UserRole.Admin);
+            return admin;
+        }
         User user = new User(username, UserRole.Player, ConfigFacade.getInitialMoney());
         getUsers().put(username, user);
 
@@ -42,5 +46,5 @@ public final class UserRepository {
         delete(user.getUsername());
     }
 
-    //TODO: user update method
+    //TODO: user update method222
 }

@@ -9,9 +9,13 @@ public class User {
     private UserRole role;
     private int money;
 
-    public User(String username, UserRole role, int money) {
+    public User(String username, UserRole role) {
         this.username = username;
         this.role = role;
+    }
+
+    public User(String username, UserRole role, int money) {
+        this(username, role);
         this.money = money;
     }
 
