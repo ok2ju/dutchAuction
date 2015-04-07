@@ -9,7 +9,7 @@ public class State {
 
     private int matchId;
     private int setId;
-    private  int gameId;
+    private int gameId;
 
     public State(int matchId, int setId, int gameId) {
         this.matchId = matchId;

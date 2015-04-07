@@ -26,4 +26,8 @@ public class User {
     public UserRole getRole() {
         return role;
     }
+
+    public int getMoney() {
+        return money;
+    }
 }
