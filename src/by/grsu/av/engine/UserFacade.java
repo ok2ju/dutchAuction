@@ -22,4 +22,8 @@ public class UserFacade {
     public Collection<User> getUsers() {
         return UserRepository.getUsers().values();
     }
+
+    public int getUserCount() {
+        return getUsers().size();
+    }
 }

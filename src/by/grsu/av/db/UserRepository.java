@@ -21,12 +21,14 @@ public final class UserRepository {
         return users;
     }
 
-    public static User create(String username) {
-        if(username.equals("admin")) {
-            User admin = new User(username, UserRole.Admin);
+    public static User create(String username, UserRole role) {
+
+        if(role.equals(UserRole.Admin)) {
+            User admin = new User(username, role);
             return admin;
         }
-        User user = new User(username, UserRole.Player, ConfigFacade.getInitialMoney());
+
+        User user = new User(username, role, ConfigFacade.getInitialMoney());
         getUsers().put(username, user);
 
         return user;

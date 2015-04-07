@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LoginFacade loginFacade = LoginFacade.getInstance();
         String username = req.getParameter(USERNAME);
-        User currentUser = loginFacade.login(username);
+        User currentUser = loginFacade.login(username, UserRole.Player);
         req.getSession().setAttribute(CURRENT_USER, currentUser);
         UserRole role = currentUser.getRole();
         if(role == UserRole.Admin) {
