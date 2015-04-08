@@ -8,12 +8,10 @@ import by.grsu.av.model.state.PlayerState;
 import by.grsu.av.model.state.State;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by ok2ju on 07.04.2015.
- */
 public class GameFacade {
 
     private final int GOOD_NUMBER = 2;
@@ -43,8 +41,8 @@ public class GameFacade {
     private List<Product> initializeProductList() {
         int productCount = getProductCount();
         List<Product> products = new ArrayList<Product>();
-        products.add(new Product("product 1", 100, productCount));
-        products.add(new Product("product 2", 100, productCount));
+        products.add(new Product("A", 100, productCount));
+        products.add(new Product("B", 100, productCount));
         return products;
     }
 
@@ -55,10 +53,53 @@ public class GameFacade {
         gameId = 0;
 
         products = initializeProductList();
+
+        final Thread daemon = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!products.isEmpty()) {
+                    // get random product from products-list
+                    int index = random.nextInt(products.size());
+                    Product product = products.get(index);
+
+                    if(product.getCount() != 0) {
+                        System.out.println("Current Product is: " + product.getTitle());
+                        System.out.println("Count of this Product: " + product.getCount());
+
+                        while (product.getPrice() > 0) {
+                            int currentPrice = product.getPrice();
+                            int newPrice = calculateNewPrice(currentPrice);
+                            product.setPrice(newPrice);
+
+                            System.out.println("Product: " + product.getTitle() + " Price: " + newPrice);
+
+                            // time to decrement price
+                            int m = randInt(5, 20);
+                            try {
+                                Thread.sleep(m * 100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        product.setPrice(100); // reset price
+                        product.setCount(product.getCount() - 1);
+                        getInstance().nextSet(); // start next set
+                    } else {
+                        products.remove(index);
+                    }
+                }
+
+                stopMath();
+            }
+        });
+
+        daemon.start(); // thread start
     }
 
     public void stopMath() {
         isStarted = false;
+        System.out.println("Match finished or stopped!");
     }
 
     public void nextSet() {
@@ -84,37 +125,15 @@ public class GameFacade {
         return result;
     }
 
-    private Thread getPriceLesserThread(final Product currentSetProduct) {
-        return new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(currentSetProduct.getPrice() > 0 && currentSetProduct.getCount() > 0) {
-                    int currentPrice = currentSetProduct.getPrice();
-                    int newPrice = calculateNewPrice(currentPrice);
-                    currentSetProduct.setPrice(newPrice);
-
-                    System.out.println("Product : " + currentSetProduct.getTitle() + " price: " + newPrice);
-
-                    int m = randInt(5, 20);
-                    try {
-                        Thread.sleep(m * 100);
-                    } catch(InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                currentSetProduct.setCount(0);//product disappear
-            }
-        });
-    }
-
     public void buy(User user, Product product) {
         System.out.println("User: " + user.getUsername() +
-                " bougth + " + product.getTitle() + " price : " + product.getPrice());
+                " bought + " + product.getTitle() + " price : " + product.getPrice());
 
         product.setCount(0);
 
     }
 
+    // decrement current price to random value
     private static int calculateNewPrice(int currentPrice) {
         int k = randInt(1, 10);
         int newPrice = currentPrice - k;
@@ -129,47 +148,13 @@ public class GameFacade {
         return products;
     }
 
-    private static Thread runUserThread(final User user, final Product product) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int k = randInt(2, 15);
-                try {
-                    Thread.sleep(k * 10);
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if(product.getCount() > 0 && user.getMoney() >= product.getPrice()) {
-                    getInstance().buy(user, product);
-                }
-            }
-        });
-        return thread;
-    }
 
     public static void main(String[] args) throws InterruptedException {
         User player1 = LoginFacade.getInstance().login("player1", UserRole.Player);
         User player2 = LoginFacade.getInstance().login("player2", UserRole.Player);
+        User player3 = LoginFacade.getInstance().login("player3", UserRole.Player);
+        User player4 = LoginFacade.getInstance().login("player4", UserRole.Player);
 
-        GameFacade gameFacade = getInstance();
-        gameFacade.startMath();
-
-        int setNumber = getInstance().getMaxSets();
-        for(int i = 0; i < setNumber; i++) {
-            gameFacade.nextSet();
-            Product currentProduct = gameFacade.getProducts().get(i);
-            System.out.println("p1: " + gameFacade.getState(player1));
-            System.out.println("p2: " + gameFacade.getState(player2));
-            Thread thread = gameFacade.getPriceLesserThread(currentProduct);
-            Thread p1 = runUserThread(player1, currentProduct);
-            Thread p2 = runUserThread(player2, currentProduct);
-            thread.start();
-            p1.start();
-            p2.start();
-            thread.join();
-            p1.join();
-            p2.join();
-        }
+        getInstance().startMath();
     }
 }
