@@ -42,7 +42,7 @@ public class GameFacade {
 
     private List<Product> initializeProductList() {
         int productCount = getProductCount();
-        List<Product> products = new ArrayList<>();
+        List<Product> products = new ArrayList<Product>();
         products.add(new Product("product 1", 100, productCount));
         products.add(new Product("product 2", 100, productCount));
         return products;
