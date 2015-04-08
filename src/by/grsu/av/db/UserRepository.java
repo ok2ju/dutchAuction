@@ -6,9 +6,6 @@ import by.grsu.av.model.UserRole;
 
 import java.util.HashMap;
 
-/**
- * Created by ok2ju on 12.03.2015.
- */
 public final class UserRepository {
 
     private static String adminName = "admin";

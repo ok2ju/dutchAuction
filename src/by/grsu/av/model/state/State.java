@@ -1,8 +1,5 @@
 package by.grsu.av.model.state;
 
-/**
- * Created by ok2ju on 07.04.2015.
- */
 public class State {
 
     // match -> set -> game (tennis rules)

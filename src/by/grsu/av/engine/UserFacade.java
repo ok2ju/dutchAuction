@@ -5,9 +5,6 @@ import by.grsu.av.model.User;
 
 import java.util.Collection;
 
-/**
- * Created by ok2ju on 11.03.2015.
- */
 public class UserFacade {
 
     private static UserFacade instance;
