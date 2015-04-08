@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by ok2ju on 07.04.2015.
- */
 public class GameFacade {
 
     private final int GOOD_NUMBER = 2;

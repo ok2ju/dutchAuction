@@ -4,9 +4,6 @@ import by.grsu.av.db.UserRepository;
 import by.grsu.av.model.User;
 import by.grsu.av.model.UserRole;
 
-/**
- * Created by ok2ju on 11.03.2015.
- */
 public class LoginFacade {
 
     private static LoginFacade instance;
