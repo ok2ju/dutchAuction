@@ -5,12 +5,12 @@ public class Product {
 
     private int price;
 
-    private int count;
+    private boolean isBought;
 
-    public Product(String title, int price, int count) {
+    public Product(String title, int price) {
         this.title = title;
         this.price = price;
-        this.count = count;
+        this.isBought = false;
     }
 
     public String getTitle() {
@@ -25,11 +25,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getCount() {
-        return count;
+    public boolean isBought() {
+        return isBought;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setIsBought(boolean isBought) {
+        this.isBought = isBought;
     }
 }

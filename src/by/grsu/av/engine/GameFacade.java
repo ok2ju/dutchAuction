@@ -8,7 +8,6 @@ import by.grsu.av.model.state.PlayerState;
 import by.grsu.av.model.state.State;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -41,8 +40,11 @@ public class GameFacade {
     private List<Product> initializeProductList() {
         int productCount = getProductCount();
         List<Product> products = new ArrayList<Product>();
-        products.add(new Product("A", 100, productCount));
-        products.add(new Product("B", 100, productCount));
+        while(productCount > 0) {
+            products.add(new Product("A", 100));
+            products.add(new Product("B", 100));
+            productCount--;
+        }
         return products;
     }
 
@@ -54,42 +56,37 @@ public class GameFacade {
 
         products = initializeProductList();
 
+        final User user = new User("Lesha", UserRole.Player, 200);
+
         final Thread daemon = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!products.isEmpty()) {
+                while(!products.isEmpty()) {
                     // get random product from products-list
                     int index = random.nextInt(products.size());
                     Product product = products.get(index);
 
-                    if(product.getCount() != 0) {
-                        System.out.println("Current Product is: " + product.getTitle());
-                        System.out.println("Count of this Product: " + product.getCount());
+                    System.out.println("Current Product is: " + product.getTitle());
 
-                        while (product.getPrice() > 0) {
-                            int currentPrice = product.getPrice();
-                            int newPrice = calculateNewPrice(currentPrice);
-                            product.setPrice(newPrice);
+                    while(product.getPrice() > 0 && !product.isBought()) {
+                        int currentPrice = product.getPrice();
+                        int newPrice = calculateNewPrice(currentPrice);
+                        product.setPrice(newPrice);
 
-                            System.out.println("Product: " + product.getTitle() + " Price: " + newPrice);
+                        System.out.println("Product: " + product.getTitle() + " Price: " + newPrice);
 
-                            // time to decrement price
-                            int m = randInt(5, 20);
-                            try {
-                                Thread.sleep(m * 100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                        buy(user, product);
+                        // time to decrement price
+                        int m = randInt(5, 20);
+                        try {
+                            Thread.sleep(m * 100);
+                        } catch(InterruptedException e) {
+                            e.printStackTrace();
                         }
-
-                        product.setPrice(100); // reset price
-                        product.setCount(product.getCount() - 1);
-                        getInstance().nextSet(); // start next set
-                    } else {
-                        products.remove(index);
                     }
+                    products.remove(index);
+                    getInstance().nextSet(); // start next set
                 }
-
                 stopMath();
             }
         });
@@ -126,11 +123,14 @@ public class GameFacade {
     }
 
     public void buy(User user, Product product) {
-        System.out.println("User: " + user.getUsername() +
-                " bought + " + product.getTitle() + " price : " + product.getPrice());
-
-        product.setCount(0);
-
+        int money = user.getMoney();
+        if(money > product.getPrice()) {
+            System.out.println("User: " + user.getUsername() +
+                    " bought + " + product.getTitle() + " price : " + product.getPrice());
+            user.setMoney(money - product.getPrice());
+            product.setIsBought(true);
+            user.addPurchase(product);
+        }
     }
 
     // decrement current price to random value
