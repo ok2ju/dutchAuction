@@ -129,7 +129,7 @@ public class GameFacade {
                     " bought + " + product.getTitle() + " price : " + product.getPrice());
             user.setMoney(money - product.getPrice());
             product.setIsBought(true);
-            user.addPurchase(product);
+            user.addPurchase(new State(matchId, setId, gameId), product);
         }
     }
 

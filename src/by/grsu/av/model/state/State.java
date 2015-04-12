@@ -21,4 +21,16 @@ public class State {
                 ", gameId=" + gameId +
                 '}';
     }
+
+    public int getMatchId() {
+        return matchId;
+    }
+
+    public int getSetId() {
+        return setId;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
 }
