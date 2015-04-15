@@ -11,7 +11,7 @@ public class User {
     private String username;
     private UserRole role;
     private int money;
-    private List<PlayerState> purchases = new ArrayList<>();
+    private int score;
 
     public User(String username, UserRole role) {
         this.username = username;
@@ -39,11 +39,11 @@ public class User {
         return money;
     }
 
-    public void addPurchase(State state, Product product) {
-        purchases.add(new PlayerState(state.getMatchId(), state.getSetId(), state.getGameId(), product));
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public List<PlayerState> getPurchases() {
-        return purchases;
+    public int getScore() {
+        return score;
     }
 }

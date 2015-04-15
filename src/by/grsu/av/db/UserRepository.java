@@ -4,16 +4,18 @@ import by.grsu.av.engine.ConfigFacade;
 import by.grsu.av.model.User;
 import by.grsu.av.model.UserRole;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class UserRepository {
 
     private static String adminName = "admin";
-    private static HashMap<String, User> users;
+    private static List<User> users;
 
-    public static HashMap<String, User> getUsers() {
+    public static List<User> getUsers() {
         if(users == null) {
-            users = new HashMap<String, User>();
+            users = new ArrayList<User>();
         }
         return users;
     }
@@ -26,15 +28,9 @@ public final class UserRepository {
         }
 
         User user = new User(username, role, ConfigFacade.getInitialMoney());
-        getUsers().put(username, user);
+        getUsers().add(user);
 
         return user;
-    }
-
-    public static User find(String username) {
-        User searchResult = getUsers().get(username); // TODO: validate username, exception
-
-        return searchResult;
     }
 
     public static void delete(String username) {
@@ -43,6 +39,10 @@ public final class UserRepository {
 
     public static void delete(User user) {
         delete(user.getUsername());
+    }
+
+    public static User find(String username) {
+        return null;
     }
 
     //TODO: user update method222

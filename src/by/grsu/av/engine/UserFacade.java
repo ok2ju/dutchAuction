@@ -4,6 +4,7 @@ import by.grsu.av.db.UserRepository;
 import by.grsu.av.model.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public class UserFacade {
 
@@ -16,8 +17,8 @@ public class UserFacade {
         return instance;
     }
 
-    public Collection<User> getUsers() {
-        return UserRepository.getUsers().values();
+    public List<User> getUsers() {
+        return UserRepository.getUsers();
     }
 
     public int getUserCount() {

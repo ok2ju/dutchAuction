@@ -32,4 +32,11 @@ public class Product {
     public void setIsBought(boolean isBought) {
         this.isBought = isBought;
     }
+
+    public String toString() {
+        return "Product{" +
+                "title='" + title + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }
