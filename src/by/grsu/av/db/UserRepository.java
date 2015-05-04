@@ -7,6 +7,8 @@ import by.grsu.av.model.UserRole;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class UserRepository {
 
@@ -15,16 +17,14 @@ public final class UserRepository {
 
     public static List<User> getUsers() {
         if(users == null) {
-            users = new ArrayList<User>();
+            users = new ArrayList<>();
         }
         return users;
     }
 
     public static User create(String username, UserRole role) {
-
         if(role.equals(UserRole.Admin)) {
-            User admin = new User(username, role);
-            return admin;
+            return new User(username, role);
         }
 
         User user = new User(username, role, ConfigFacade.getInitialMoney());
@@ -34,16 +34,19 @@ public final class UserRepository {
     }
 
     public static void delete(String username) {
-        getUsers().remove(username);
+        users = getUsers()
+                .stream()
+                .filter(user -> !user.getUsername().equals(username))
+                .collect(Collectors.toList());
     }
 
     public static void delete(User user) {
         delete(user.getUsername());
     }
 
-    public static User find(String username) {
-        return null;
+    public static Optional<User> find(String username) {
+        return getUsers().stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst();
     }
-
-    //TODO: user update method222
 }

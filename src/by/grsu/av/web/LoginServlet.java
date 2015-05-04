@@ -1,6 +1,5 @@
 package by.grsu.av.web;
 
-import by.grsu.av.db.UserRepository;
 import by.grsu.av.engine.LoginFacade;
 import by.grsu.av.engine.UserFacade;
 import by.grsu.av.model.User;
@@ -19,6 +18,12 @@ public class LoginServlet extends HttpServlet {
 
     private static final String USERNAME = "username";
     private static final String CURRENT_USER = "currentUser";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login/login.jsp");
+        requestDispatcher.forward(req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

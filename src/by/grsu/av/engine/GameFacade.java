@@ -8,11 +8,13 @@ import by.grsu.av.model.state.AdminState;
 import by.grsu.av.model.state.PlayerState;
 import by.grsu.av.model.state.State;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class GameFacade {
 
-    private final int GOOD_NUMBER = 2;
+    private final static int GOOD_NUMBER = 2;
     private boolean isStarted;
     private int matchId;
     private int setId;
@@ -40,7 +42,7 @@ public class GameFacade {
         int productCount = getProductCount();
         List<Product> products = new ArrayList<Product>();
         while(productCount > 0) {
-            for(String type: ConfigFacade.getProductTypes()) {
+            for(String type : ConfigFacade.getProductTypes()) {
                 products.add(new Product(type, 100));
             }
             productCount--;
@@ -59,43 +61,40 @@ public class GameFacade {
         //final User user = new User("Lesha", UserRole.Player, 100);
         final List<User> users = UserFacade.getInstance().getUsers();
 
-        final Thread daemon = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(!products.isEmpty()) {
-                    // get random product from products-list
-                    int index = random.nextInt(products.size());
-                    Product product = products.get(index);
+        final Thread daemon = new Thread(() -> {
+            while(!products.isEmpty()) {
+                // get random product from products-list
+                int index = random.nextInt(products.size());
+                Product product = products.get(index);
 
-                    System.out.println("Current Product is: " + product.getTitle());
+                System.out.println("Current Product is: " + product.getTitle());
 
-                    while(product.getPrice() > 0 && !product.isBought()) {
-                        int currentPrice = product.getPrice();
-                        int newPrice = calculateNewPrice(currentPrice);
-                        product.setPrice(newPrice);
+                while(product.getPrice() > 0 && !product.isBought()) {
+                    int currentPrice = product.getPrice();
+                    int newPrice = calculateNewPrice(currentPrice);
+                    product.setPrice(newPrice);
 
-                        System.out.println("Product: " + product.getTitle() + " Price: " + newPrice);
+                    System.out.println("Product: " + product.getTitle() + " Price: " + newPrice);
 
-                        if(currentPrice - newPrice == 3) {
-                            int userNumber = random.nextInt(users.size());
-                            User user  = users.get(userNumber);
-                            buy(user, product, newPrice);
-                        }
-
-                        // time to decrement price
-                        int m = randInt(5, 20);
-                        try {
-                            Thread.sleep(m * 10);
-                        } catch(InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    if(currentPrice - newPrice == 3) {
+                        int userNumber = random.nextInt(users.size());
+                        User user = users.get(userNumber);
+                        buy(user, product, newPrice);
                     }
-                    products.remove(index);
-                    getInstance().nextSet(); // start next set
-                }
-                stopMath();
 
+                    // time to decrement price
+                    int m = randInt(5, 20);
+                    try {
+                        Thread.sleep(m * 10);
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                products.remove(index);
+                getInstance().nextSet(); // start next set
             }
+            stopMath();
+
         });
 
         daemon.start(); // thread start
@@ -104,9 +103,9 @@ public class GameFacade {
     public void stopMath() {
         isStarted = false;
         System.out.println("Match finished or stopped!");
-        for (User user: UserFacade.getInstance().getUsers()) {
+        for(User user : UserFacade.getInstance().getUsers()) {
             int score = HistoryFacade.getInstance().calcScore(user);
-            System.out.println("User :" + user.getUsername()+ " score: " + score);
+            System.out.println("User :" + user.getUsername() + " score: " + score);
         }
     }
 
@@ -116,21 +115,6 @@ public class GameFacade {
         } else {
             stopMath();
         }
-    }
-
-    public State getState(User user) {
-        State result = null;
-
-        if(isStarted) {
-            if(user.getRole().equals(UserRole.Admin)) {
-                result = new AdminState(matchId, setId, gameId);
-            } else if(user.getRole().equals(UserRole.Player)) {
-                result = new PlayerState(matchId, setId, gameId);
-            }
-            // else {throw new NotImplementedException();}
-        }
-
-        return result;
     }
 
     public State getState() {
@@ -150,8 +134,7 @@ public class GameFacade {
 
     // decrement current price to random value
     private static int calculateNewPrice(int currentPrice) {
-        int k = randInt(1, 10);
-        int newPrice = currentPrice - k;
+        int newPrice = currentPrice - randInt(1, 10);
         return newPrice < 0 ? 0 : newPrice;
     }
 
@@ -159,16 +142,10 @@ public class GameFacade {
         return random.nextInt((max - min) + 1) + min;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-
     public static void main(String[] args) throws InterruptedException {
-        User player1 = LoginFacade.getInstance().login("player1", UserRole.Player);
-        User player2 = LoginFacade.getInstance().login("player2", UserRole.Player);
-        User player3 = LoginFacade.getInstance().login("player3", UserRole.Player);
-
+        LoginFacade.getInstance().login("player1", UserRole.Player);
+        LoginFacade.getInstance().login("player2", UserRole.Player);
+        LoginFacade.getInstance().login("player3", UserRole.Player);
         getInstance().startMath();
     }
 }

@@ -37,7 +37,7 @@ public class HistoryFacade {
 
     public int calcScore(User user) {
         Set<String> boughTypes = new HashSet<String>();
-        int result = 0;
+        int result;
         for (Purchase purchase : purchases) {
             String productTitle = purchase.getProduct().getTitle();
             if (purchase.getUser().equals(user) && !boughTypes.contains(productTitle)) {

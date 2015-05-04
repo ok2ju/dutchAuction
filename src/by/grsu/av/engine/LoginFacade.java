@@ -16,10 +16,8 @@ public class LoginFacade {
     }
 
     public User login(String username, UserRole role) {
-        try {
-            return UserRepository.find(username) == null ? UserRepository.create(username, role) : null;
-        } catch (Throwable e) {
-            return null;
-        }
+        return !UserRepository.find(username).isPresent() ?
+                UserRepository.create(username, role) :
+                UserRepository.find(username).orElseGet(null);
     }
 }
