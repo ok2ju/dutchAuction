@@ -8,21 +8,19 @@ import by.grsu.av.model.UserRole;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends AbstractServlet {
 
     private static final String USERNAME = "username";
-    private static final String CURRENT_USER = "currentUser";
+    public static final String CURRENT_USER = "currentUser";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login/login.jsp");
-        requestDispatcher.forward(req, resp);
+        render("login/login.jsp", req, resp);
     }
 
     @Override
@@ -31,14 +29,6 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter(USERNAME);
         User currentUser = loginFacade.login(username, UserRole.Player);
         req.getSession().setAttribute(CURRENT_USER, currentUser);
-        UserRole role = currentUser.getRole();
-        if(role == UserRole.Admin) {
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher("admin/dashbord.jsp");
-            req.setAttribute("users", UserFacade.getInstance().getUsers());
-            requestDispatcher.forward(req, resp);
-        } else {
-            RequestDispatcher requestDispatcher = req.getRequestDispatcher("user/waiting.jsp");
-            requestDispatcher.forward(req, resp);
-        }
+        redirect("/game", resp);
     }
 }

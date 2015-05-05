@@ -14,6 +14,7 @@
     <div id="userTable">
         <jsp:include page="/user/usersTable.jsp"/>
     </div>
+    <a href="/startgame">Start game</a>
     <script src="/js/jquery.min.js"></script>
     <script>
         (function() {
