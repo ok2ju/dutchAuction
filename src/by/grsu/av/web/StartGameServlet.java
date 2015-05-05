@@ -16,5 +16,6 @@ public class StartGameServlet extends AbstractServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         GameFacade.getInstance().startMath();
+        redirect("/admin", resp);
     }
 }

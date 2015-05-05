@@ -11,16 +11,16 @@
     <title></title>
 </head>
 <body>
-    <div id="userTable">
-        <jsp:include page="/user/usersTable.jsp"/>
+    <div id="content">
+        <jsp:include page="/admin/content.jsp"/>
     </div>
     <a href="/startgame">Start game</a>
     <script src="/js/jquery.min.js"></script>
     <script>
         (function() {
             setInterval(function() {
-                $.get('/user/online', function(html) {
-                    $('#userTable').html(html);
+                $.get('/admin/content', function(html) {
+                    $('#content').html(html);
                 });
             }, 3000);
         })();
