@@ -26,6 +26,7 @@ public class GameFacade {
         if(instance == null) instance = new GameFacade();
         return instance;
     }
+    private int CHANGED_AMOUNGHT;
 
     private int getMaxSets() {
         return ConfigFacade.getGoodNumber() * getProductCount();
@@ -58,7 +59,7 @@ public class GameFacade {
             while(!products.isEmpty()) {
                 product = randomProduct(products);
                 while(priceAndNotBought(product)) {
-                    changeProductPrice(product);
+                    CHANGED_AMOUNGHT = changeProductPrice(product);
                     timeout();
                 }
                 products.remove(product);
@@ -78,10 +79,11 @@ public class GameFacade {
         }
     }
 
-    private void changeProductPrice(Product product) {
+    private int changeProductPrice(Product product) {
         int currentPrice = product.getPrice();
         int newPrice = calculateNewPrice(currentPrice);
         product.setPrice(newPrice);
+        return currentPrice - newPrice;
     }
 
     private boolean priceAndNotBought(Product product) {
@@ -121,7 +123,9 @@ public class GameFacade {
             System.out.println("User: " + user.getUsername() +
                     " bought + " + product.getTitle() + " price : " + product.getPrice());
             product.setIsBought(true);
-            user.setMoney(money - product.getPrice());
+            if(CHANGED_AMOUNGHT != 7) {
+                user.setMoney(money - product.getPrice());
+            }
             HistoryFacade.getInstance().addPurchase(new Purchase(user, product, product.getPrice(), getState()));
         }
     }
