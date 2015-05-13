@@ -19,6 +19,9 @@
 <div id="container">
   Waiting
 </div>
+<form action="/jocker" method="post">
+  Jocker: <input name="jockerNumber" type="text"/>
+</form>
 <script src="/js/jquery.min.js"></script>
 <script>
   (function() {
